@@ -1,4 +1,4 @@
-FROM node:18-slim
+FROM node:18
 
 # Install system dependencies for Tesseract
 RUN apt-get update && apt-get install -y \
@@ -8,13 +8,7 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-
-# Install dependencies
-RUN npm install
-
-# Copy application files
+# Copy all files including node_modules
 COPY . .
 
 # Create uploads directory
