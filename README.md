@@ -9,6 +9,7 @@ A Node.js application that extracts text from images using Optical Character Rec
 - **Tesseract.js** - OCR engine for text extraction
 - **MongoDB** - Database for storing results
 - **Docker & Docker Compose** - Containerization
+- **express-rate-limit** - API rate limiting for security
 
 ## Features
 
@@ -17,6 +18,8 @@ A Node.js application that extracts text from images using Optical Character Rec
 - RESTful API for uploading images and retrieving results
 - Support for multiple image formats (JPEG, PNG, GIF, BMP, TIFF)
 - Docker containerization for easy deployment
+- Rate limiting for API protection (10 uploads per 15 minutes, 100 API requests per 15 minutes)
+- Web interface for easy testing
 
 ## Prerequisites
 
@@ -201,6 +204,15 @@ image-to-text/
 
 - `PORT` - Server port (default: 3000)
 - `MONGO_URL` - MongoDB connection URL (default: mongodb://mongodb:27017)
+
+## Security Features
+
+- **Rate Limiting**: The API includes rate limiting to prevent abuse:
+  - Upload endpoint: 10 requests per IP per 15 minutes
+  - General API endpoints: 100 requests per IP per 15 minutes
+- **Secure File Naming**: Uses crypto.randomUUID() for unpredictable filenames
+- **Input Validation**: File type validation on upload
+- **File Size Limits**: Maximum upload size of 10MB
 
 ## Stopping the Application
 
