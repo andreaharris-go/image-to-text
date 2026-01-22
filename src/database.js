@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 
 const MONGO_URL = process.env.MONGO_URL || 'mongodb://mongodb:27017';
 const DB_NAME = 'imageToText';
@@ -43,7 +43,6 @@ async function getResults(limit = 10) {
 async function getResultById(id) {
   const database = await connect();
   const collection = database.collection('results');
-  const { ObjectId } = require('mongodb');
   const result = await collection.findOne({ _id: new ObjectId(id) });
   return result;
 }

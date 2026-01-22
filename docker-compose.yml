@@ -14,7 +14,7 @@ services:
       - ./uploads:/app/uploads
 
   mongodb:
-    image: mongo:7
+    image: mongo:7.0.16
     container_name: image-to-text-mongodb
     ports:
       - "27017:27017"

@@ -3,6 +3,7 @@ const multer = require('multer');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 const { extractTextFromImage } = require('./ocr');
 const { connect, saveResult, getResults, getResultById } = require('./database');
 
@@ -24,7 +25,7 @@ const storage = multer.diskStorage({
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const uniqueSuffix = crypto.randomUUID();
     cb(null, uniqueSuffix + path.extname(file.originalname));
   }
 });
