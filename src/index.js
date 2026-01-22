@@ -4,16 +4,34 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
+const rateLimit = require('express-rate-limit');
 const { extractTextFromImage } = require('./ocr');
 const { connect, saveResult, getResults, getResultById } = require('./database');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Rate limiting configuration
+const uploadLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Limit each IP to 10 upload requests per windowMs
+  message: 'Too many upload requests from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
+app.use('/api', apiLimiter); // Apply rate limiting to API routes
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -60,7 +78,7 @@ app.get('/', (req, res) => {
 });
 
 // Upload and process image
-app.post('/upload', upload.single('image'), async (req, res) => {
+app.post('/upload', uploadLimiter, upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'No image file provided' });
